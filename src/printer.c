@@ -12,12 +12,6 @@
 #include "printer.h"
 
 
-// struct Printer {
-//     const char *name;
-//     int fd;
-// };
-
-
 static const tcflag_t data_bits[] = { CS5, CS6, CS7, CS8 };
 static const speed_t baud_rate[] = {
     B0, B50, B75, B110, B134, B150, B200, B300, B600, B1200, B1800, B2400,
