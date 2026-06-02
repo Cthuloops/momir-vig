@@ -20,6 +20,9 @@ struct Printer {
 };
 
 
+typedef unsigned char Byte;
+
+
 enum ControlFlow {
     PRINTER_CONTROL_NONE,
     PRINTER_CONTROL_HARDWARE,
