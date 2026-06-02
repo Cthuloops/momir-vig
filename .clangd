@@ -1,0 +1,9 @@
+CompileFlags:
+  Add:
+    - -xc
+    - -std=c99
+    - -Wall
+    - -Werror
+    - -g
+    - -O0
+    - -fsanitize=undefined
