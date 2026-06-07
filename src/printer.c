@@ -141,7 +141,7 @@ bool printer_init(struct Printer *printer,
         goto cleanup;
     }
 
-    const Byte init[] = { 0x1B, 0x40 };
+    const unsigned char init[] = { 0x1B, 0x40 };
     if (write(port, init, sizeof(init)) == -1) {
         fprintf(stderr, "Error %i from write init for printer %s: %s\n", errno,
                 printer->name, strerror(errno));
