@@ -23,7 +23,7 @@ static size_t write_cb(void *contents, size_t size, size_t memb, void *userp) {
     mem->memory = ptr;
     memcpy(&(mem->memory[mem->size]), contents, realsize);
     mem->size += realsize;
-    mem->memory[mem->size] = 0;
+    mem->memory[mem->size] = '\0';
 
     return realsize;
 }
@@ -31,7 +31,6 @@ static size_t write_cb(void *contents, size_t size, size_t memb, void *userp) {
 
 int curl_init(struct CurlFatStruct *cfs) {
     int out_status = 1;
-    struct curl_slist *list = NULL;
 
     if (!cfs) {
         fprintf(stderr, "Passed NULL to curl_init\n");
@@ -63,11 +62,13 @@ int curl_init(struct CurlFatStruct *cfs) {
     // Write the information from requests into the struct.
     curl_easy_setopt(cfs->curl, CURLOPT_WRITEFUNCTION, write_cb);
     curl_easy_setopt(cfs->curl, CURLOPT_WRITEDATA, (void *)cfs);
+
+    cfs->list = NULL;
     
     // Attach the required headers.
-    list = curl_slist_append(list, USER_AGENT);
-    list = curl_slist_append(list, ACCEPT);
-    curl_easy_setopt(cfs->curl, CURLOPT_HTTPHEADER, list);
+    cfs->list = curl_slist_append(cfs->list, USER_AGENT);
+    cfs->list = curl_slist_append(cfs->list, ACCEPT);
+    curl_easy_setopt(cfs->curl, CURLOPT_HTTPHEADER, cfs->list);
 
     goto out;
 
@@ -75,9 +76,6 @@ cleanup_memory:
     free(cfs->memory);
 
 out:
-    if (list) {
-        curl_slist_free_all(list);
-    }
     return out_status;
 }
 
@@ -113,4 +111,28 @@ int scryfall_bulk_data(struct CurlFatStruct *cfs) {
 
 out:
     return out_status;
+}
+
+
+void curl_deinit(struct CurlFatStruct *cfs) {
+    if (!cfs) {
+        goto out;
+    }
+
+    if (cfs->curl) {
+        curl_easy_cleanup(cfs->curl);
+    }
+
+    if (cfs->memory) {
+        free(cfs->memory);
+        cfs->size = 0;
+    }
+
+    if (cfs->list) {
+        curl_slist_free_all(cfs->list);
+    }
+
+
+out:
+    return;
 }
