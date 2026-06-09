@@ -8,6 +8,7 @@
 struct CurlFatStruct {
     CURL *curl;
     char *memory;
+    struct curl_slist *list;
     size_t size;
 };
 
@@ -38,8 +39,6 @@ int scryfall_bulk_data(struct CurlFatStruct *cfs);
 /**
  * @brief curl_deinit deinitializes the CurlFatStruct.
  * @param[in] cfs Pointer to the CurlFatStruct to deinitialize.
- *
- * Does nothing if the pointer is null or curl is unintialized.
  */
 void curl_deinit(struct CurlFatStruct *cfs);
 
