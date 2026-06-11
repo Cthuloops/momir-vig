@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "scryfall.h"
+#include "http_client.h"
 
 #define BULK_DATA_URL "https://api.scryfall.com/bulk-data"
 #define USER_AGENT "User-Agent: MomirVigApp/0.1"
