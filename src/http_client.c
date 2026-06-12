@@ -15,13 +15,14 @@ static size_t write_cb(void *contents, size_t size, size_t memb, void *userp) {
     struct CurlFatStruct *mem = (struct CurlFatStruct *)userp;
 
     char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-    if (!ptr) {
+    if (!ptr)
+    {
         fprintf(stderr, "Error %i from write_cb: %s\n", errno, strerror(errno));
         return 0;
     }
 
     mem->memory = ptr;
-    memcpy(&(mem->memory[mem->size]), contents, realsize);
+    memcpy(&(mem->memory[mem->size - 1]), contents, realsize);
     mem->size += realsize;
     mem->memory[mem->size] = '\0';
 
