@@ -1,5 +1,5 @@
-#ifndef SCRYFALL_H_
-#define SCRYFALL_H_
+#ifndef HTTP_CLIENT_H_
+#define HTTP_CLIENT_H_
 
 #include <stdlib.h>
 
@@ -43,4 +43,4 @@ int scryfall_bulk_data(struct CurlFatStruct *cfs);
 void curl_deinit(struct CurlFatStruct *cfs);
 
 
-#endif // SCRYFALL_H_
+#endif // HTTP_CLIENT_H_
