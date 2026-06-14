@@ -5,13 +5,13 @@
 
 #include <curl/curl.h>
 
-struct CurlFatStruct {
-    CURL *curl;
-    char *memory;
-    struct curl_slist *list;
-    size_t size;
+struct CurlFatStruct
+{
+  CURL *curl;
+  char *memory;
+  struct curl_slist *list;
+  size_t size;
 };
-
 
 /**
  * @brief curl_init initializes curl.
@@ -21,8 +21,7 @@ struct CurlFatStruct {
  *
  * @return int 1 if successful.
  */
-int curl_init(struct CurlFatStruct *cfs);
-
+int curl_init (struct CurlFatStruct *cfs);
 
 /**
  * @brief scryfall_bulk_data issues a request for the bulk_data information.
@@ -33,14 +32,12 @@ int curl_init(struct CurlFatStruct *cfs);
  *
  * @returns int 1 if successul.
  */
-int scryfall_bulk_data(struct CurlFatStruct *cfs);
-
+int scryfall_bulk_data (struct CurlFatStruct *cfs);
 
 /**
  * @brief curl_deinit deinitializes the CurlFatStruct.
  * @param[in] cfs Pointer to the CurlFatStruct to deinitialize.
  */
-void curl_deinit(struct CurlFatStruct *cfs);
-
+void curl_deinit (struct CurlFatStruct *cfs);
 
 #endif // HTTP_CLIENT_H_
