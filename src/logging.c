@@ -80,7 +80,7 @@ log_write (enum LogLevel level, const char *module, const char *file,
                TIME_SIZE);
     }
 
-  fprintf (stream, "[%s] %s %s ", log_str[current_log_level], current_time,
+  fprintf (stream, "[%s] %s %s ", log_str[level], current_time,
            module ? module : "");
 
   va_list args;
