@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "constants.h"
 #include "http_client.h"
-
-#define BULK_DATA_URL "https://api.scryfall.com/bulk-data"
-#define USER_AGENT "User-Agent: MomirVigApp/0.1"
-#define ACCEPT "Accept: */*"
+#include "logging.h"
 
 static size_t
 write_cb (void *contents, size_t size, size_t memb, void *userp)
@@ -18,13 +16,13 @@ write_cb (void *contents, size_t size, size_t memb, void *userp)
   char *ptr = realloc (mem->memory, mem->size + realsize + 1);
   if (!ptr)
     {
-      fprintf (stderr, "Error %i from write_cb: %s\n", errno,
-               strerror (errno));
+      LOG_ERROR (HTTP_CLIENT, "Error %i from write_cb: %s", errno,
+                 strerror (errno));
       return 0;
     }
 
   mem->memory = ptr;
-  memcpy (&(mem->memory[mem->size - 1]), contents, realsize);
+  memcpy (&(mem->memory[mem->size]), contents, realsize);
   mem->size += realsize;
   mem->memory[mem->size] = '\0';
 
@@ -36,17 +34,19 @@ curl_init (struct CurlFatStruct *cfs)
 {
   int out_status = 1;
 
+  LOG_INFO (HTTP_CLIENT, "Initializing CURL");
+
   if (!cfs)
     {
-      fprintf (stderr, "Passed NULL to curl_init\n");
+      LOG_ERROR (HTTP_CLIENT, "Passed NULL to curl_init");
       goto out;
     }
 
   CURLcode result = curl_global_init (CURL_GLOBAL_ALL);
   if (result)
     {
-      fprintf (stderr, "Failed to initialize curl: %s\n",
-               curl_easy_strerror (result));
+      LOG_ERROR (HTTP_CLIENT, "Failed to initialize curl: %s",
+                 curl_easy_strerror (result));
       out_status = (int)result;
       goto out;
     }
@@ -54,16 +54,17 @@ curl_init (struct CurlFatStruct *cfs)
   cfs->memory = malloc (1);
   if (!cfs->memory)
     {
-      fprintf (stderr, "Error %i from malloc: %s\n", errno, strerror (errno));
+      LOG_ERROR (HTTP_CLIENT, "Error %i from malloc: %s", errno,
+                 strerror (errno));
       out_status = errno;
       goto out;
     }
-  cfs->size = 1;
+  cfs->size = 0;
 
   cfs->curl = curl_easy_init ();
   if (!cfs->curl)
     {
-      fprintf (stderr, "Something went wrong with curl_easy_init()\n");
+      LOG_ERROR (HTTP_CLIENT, "Something went wrong with curl_easy_init()");
       goto cleanup_memory;
     }
 
@@ -74,8 +75,8 @@ curl_init (struct CurlFatStruct *cfs)
   cfs->list = NULL;
 
   // Attach the required headers.
-  cfs->list = curl_slist_append (cfs->list, USER_AGENT);
-  cfs->list = curl_slist_append (cfs->list, ACCEPT);
+  cfs->list = curl_slist_append (cfs->list, SCRYFALL_USER_AGENT);
+  cfs->list = curl_slist_append (cfs->list, SCRYFALL_ACCEPT);
   curl_easy_setopt (cfs->curl, CURLOPT_HTTPHEADER, cfs->list);
 
   goto out;
@@ -84,6 +85,11 @@ cleanup_memory:
   free (cfs->memory);
 
 out:
+  if (out_status == 1)
+    {
+      LOG_INFO (HTTP_CLIENT, "Successfully intialized CURL");
+    }
+
   return out_status;
 }
 
@@ -93,29 +99,32 @@ scryfall_bulk_data (struct CurlFatStruct *cfs)
   int out_status = -1;
   if (!cfs)
     {
-      fprintf (stderr, "Passed NULL to scryfall_bulk_data()\n");
+      LOG_ERROR (HTTP_CLIENT, "Passed NULL to scryfall_bulk_data()");
       goto out;
     }
 
   if (!cfs->curl)
     {
-      fprintf (stderr, "Curl is not intialized in scryfall_bulk_data()\n");
+      LOG_ERROR (HTTP_CLIENT,
+                 "Curl is not intialized in scryfall_bulk_data()");
       goto out;
     }
 
   if (!cfs->memory)
     {
-      fprintf (stderr, "Memory is not initialized in scryfall_bulk_data()\n");
+      LOG_ERROR (HTTP_CLIENT,
+                 "Memory is not initialized in scryfall_bulk_data()");
       goto out;
     }
 
-  curl_easy_setopt (cfs->curl, CURLOPT_URL, BULK_DATA_URL);
+  curl_easy_setopt (cfs->curl, CURLOPT_URL, SCRYFALL_BULK_DATA_URL);
 
+  LOG_INFO (HTTP_CLIENT, "Requesting bulk data from Scryfall API");
   CURLcode result = curl_easy_perform (cfs->curl);
   if (result != CURLE_OK)
     {
-      fprintf (stderr, "curl_easy_perform() failed: %s\n",
-               curl_easy_strerror (result));
+      LOG_ERROR (HTTP_CLIENT, "curl_easy_perform() failed: %s",
+                 curl_easy_strerror (result));
       out_status = (int)result;
       goto out;
     }
@@ -129,9 +138,11 @@ out:
 void
 curl_deinit (struct CurlFatStruct *cfs)
 {
+  LOG_INFO (HTTP_CLIENT, "Deinitializing CURL");
   if (!cfs)
     {
-      goto out;
+      LOG_WARN (HTTP_CLIENT, "Passed NULL to curl_deinit");
+      return;
     }
 
   if (cfs->curl)
@@ -149,7 +160,4 @@ curl_deinit (struct CurlFatStruct *cfs)
     {
       curl_slist_free_all (cfs->list);
     }
-
-out:
-  return;
 }
