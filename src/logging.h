@@ -11,6 +11,7 @@ enum LogLevel
   MOMIR_LOG_NONE,
   MOMIR_LOG_DEBUG,
   MOMIR_LOG_INFO,
+  MOMIR_LOG_WARN,
   MOMIR_LOG_ERROR,
   MOMIR_LOG_FATAL
 };
@@ -37,6 +38,8 @@ void log_deinit (void);
   log_write (MOMIR_LOG_DEBUG, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #define LOG_INFO(module, fmt, ...)                                            \
   log_write (MOMIR_LOG_INFO, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LOG_WARN(module, fmt, ...)                                            \
+  log_write (MOMIR_LOG_WARN, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #define LOG_ERROR(module, fmt, ...)                                           \
   log_write (MOMIR_LOG_ERROR, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #define LOG_FATAL(module, fmt, ...)                                           \
