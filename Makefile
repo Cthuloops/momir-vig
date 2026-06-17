@@ -7,7 +7,7 @@ SRC_DIRS := ./src
 CC := gcc
 
 SANFLAGS := -fsanitize=undefined
-CFLAGS := -g -Wall -Werror -pedantic -std=c99 -O0 $(SANFLAGS) $(INCFLAGS)
+CFLAGS := -g -Wall -Werror -pedantic -std=c23 -O0 $(SANFLAGS) $(INCFLAGS)
 
 LDFLAGS := $(SANFLAGS) -lcurl
 
