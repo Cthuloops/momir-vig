@@ -2,7 +2,7 @@
 TARGET_EXEC := vig
 
 BUILD_DIR := ./build
-SRC_DIRS := ./src
+SRC_DIRS := ./src ./vendor
 
 CC := gcc
 
