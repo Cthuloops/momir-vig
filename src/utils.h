@@ -8,12 +8,18 @@
  * creates the file if it's missing.
  * @param[in] file_path Path to the file.
  * @param[in] is_dir If true, look for directory, else look for regular file.
- * @param[in] create If true, create the directory/file if it isn't found
- * (directory permissions = 0755, file permissions = 0644).
  *
- * @return True if file exists or is created, false otherwise.
+ * @return True if file exists, false otherwise.
  */
-bool file_exists (const char *file_path, bool is_dir, bool create);
+bool file_exists (const char *file_path, bool is_dir);
+
+/**
+ * @brief create_dir creates a directory at the given path.
+ * @param[in] dir_path Path to the directory.
+ *
+ * @return True if the directory exists/created, false otherwise.
+ */
+bool create_dir (const char *dir_path);
 
 /**
  * @brief bulk_file_needs_update checks if the bulk file needs to be updated.
