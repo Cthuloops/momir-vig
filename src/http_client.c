@@ -18,7 +18,7 @@ write_cb (void *contents, size_t size, size_t memb, void *userp)
     {
       LOG_ERROR (MOMIR_HTTP_CLIENT, "Error %i from write_cb: %s", errno,
                  strerror (errno));
-      return 0;
+      return realsize;
     }
 
   mem->memory = ptr;
