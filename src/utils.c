@@ -58,7 +58,7 @@ create_file (const char *file_path, bool is_dir)
 }
 
 bool
-file_exists (const char *file_path, bool is_dir, bool create)
+file_exists (const char *file_path, bool is_dir)
 {
   if (!file_path)
     {
@@ -88,21 +88,31 @@ file_exists (const char *file_path, bool is_dir, bool create)
     }
   else
     {
-      if (errno == ENOENT && create)
-        {
-          LOG_INFO (MOMIR_UTILS, "Creating %s at: %s",
-                    is_dir ? "directory" : "file", file_path);
-
-          create_file (file_path, is_dir);
-        }
-      else
-        {
-          LOG_ERROR (MOMIR_UTILS, "Error from stat at %s: %s", file_path,
-                     strerror (errno));
-          return false;
-        }
+      LOG_ERROR (MOMIR_UTILS, "Error from stat at %s: %s", file_path,
+                 strerror (errno));
+      return false;
     }
 
+  return false;
+}
+
+bool
+create_dir (const char *dir_path)
+{
+  if (!dir_path)
+    {
+      LOG_ERROR (MOMIR_UTILS, "Passed NULL dir_path to create_dir");
+      return false;
+    }
+
+  if (file_exists (dir_path, true))
+    {
+      return true;
+    }
+  else
+    {
+      return create_file (dir_path, true);
+    }
   return false;
 }
 
@@ -116,7 +126,7 @@ bulk_file_needs_update (const char *file_path)
       return false;
     }
 
-  if (!file_exists (file_path, false, false))
+  if (!file_exists (file_path, false))
     {
       LOG_ERROR (MOMIR_UTILS, "File %s does not exist");
       return false;
@@ -221,13 +231,13 @@ cleanup_cjson:
 cleanup_bulk_file:
   if (fp)
     {
-      // fclose (fp);
+      fclose (fp);
     }
 
 cleanup_bulk_string:
   if (bulk_string)
     {
-      // free (bulk_string);
+      free (bulk_string);
     }
 
   return out_status;
