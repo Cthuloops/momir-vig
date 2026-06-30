@@ -119,6 +119,8 @@ create_dir (const char *dir_path)
 bool
 bulk_file_needs_update (const char *file_path)
 {
+  LOG_DEBUG (MOMIR_UTILS, "Checking if bulk file needs update");
+
   if (!file_path || strcmp (file_path, "") == 0)
     {
       LOG_ERROR (MOMIR_UTILS,
@@ -216,8 +218,17 @@ bulk_file_needs_update (const char *file_path)
             if (difftime (time (NULL), mktime (&last_updated_calender))
                 >= SCRYFALL_BULK_DATA_UPDATE_TIME)
               {
+                LOG_DEBUG (MOMIR_UTILS,
+                           "Bulk file last updated at %s, needs updating",
+                           updated_at->valuestring);
                 out_status = true;
                 goto cleanup_cjson;
+              }
+            else
+              {
+                LOG_DEBUG (MOMIR_UTILS,
+                           "Bulk file last updated at %s, no need to update",
+                           updated_at->valuestring);
               }
 
             goto cleanup_cjson;
