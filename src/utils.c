@@ -219,16 +219,17 @@ bulk_file_needs_update (const char *file_path)
                 >= SCRYFALL_BULK_DATA_UPDATE_TIME)
               {
                 LOG_DEBUG (MOMIR_UTILS,
-                           "Bulk file last updated at %s, needs updating",
+                           "Default cards last updated at %s, needs updating",
                            updated_at->valuestring);
                 out_status = true;
                 goto cleanup_cjson;
               }
             else
               {
-                LOG_DEBUG (MOMIR_UTILS,
-                           "Bulk file last updated at %s, no need to update",
-                           updated_at->valuestring);
+                LOG_DEBUG (
+                    MOMIR_UTILS,
+                    "Default cards last updated at %s, no need to update",
+                    updated_at->valuestring);
               }
 
             goto cleanup_cjson;
