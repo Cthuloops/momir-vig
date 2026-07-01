@@ -76,7 +76,7 @@ curl_init (struct CurlFatStruct *cfs)
   cfs->list = NULL;
 
   // Attach the required headers.
-  cfs->list = curl_slist_append (cfs->list, SCRYFALL_USER_AGENT);
+  cfs->list = curl_slist_append (cfs->list, SCRYFALL_HEADER_USER_AGENT);
   cfs->list = curl_slist_append (cfs->list, SCRYFALL_ACCEPT);
   curl_easy_setopt (cfs->curl, CURLOPT_HTTPHEADER, cfs->list);
 
@@ -118,7 +118,7 @@ scryfall_bulk_data (struct CurlFatStruct *cfs)
       goto out;
     }
 
-  curl_easy_setopt (cfs->curl, CURLOPT_URL, SCRYFALL_BULK_DATA_URL);
+  curl_easy_setopt (cfs->curl, CURLOPT_URL, SCRYFALL_BULK_URL);
 
   LOG_INFO (MOMIR_HTTP_CLIENT, "Requesting bulk data from Scryfall API");
   CURLcode result = curl_easy_perform (cfs->curl);
