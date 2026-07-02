@@ -1,3 +1,7 @@
+/**
+ * @file http_client.h
+ * @brief HTTP client functions and macros.
+ */
 #ifndef HTTP_CLIENT_H_
 #define HTTP_CLIENT_H_
 
@@ -6,12 +10,15 @@
 
 #include <curl/curl.h>
 
+/**
+ * @brief Wrapper around CURL handle, memory buffer, and header list.
+ */
 struct CurlFatStruct
 {
-  CURL *curl;
-  char *memory;
-  struct curl_slist *list;
-  size_t size;
+  CURL *curl;              /**< CURL easy handle */
+  char *memory;            /**< Response buffer */
+  struct curl_slist *list; /**< Header list */
+  size_t size;             /**< Response buffer size */
 };
 
 /**
@@ -40,15 +47,13 @@ struct BulkDataItem
 int curl_init (struct CurlFatStruct *cfs);
 
 /**
- * @brief scryfall_bulk_data issues a request for the bulk_data information.
+ * @brief get_default_cards issues a request for the default card data from
+ * scryfall.
  * @param[in] cfs Pointer to the CurlFatStruct to use for the request.
  *
- * Downloads the json for the bulk_data api information from scryfall. This
- * gets stored in the CurlFatStruct.
- *
- * @returns int 1 if successul.
+ * @return int 1 if successful.
  */
-int scryfall_bulk_data (struct CurlFatStruct *cfs);
+int download_default_cards (struct CurlFatStruct *cfs);
 
 /**
  * @brief curl_deinit deinitializes the CurlFatStruct.

@@ -94,33 +94,45 @@ out:
   return out_status;
 }
 
-int
-scryfall_bulk_data (struct CurlFatStruct *cfs)
+static int
+get_scryfall_data (struct CurlFatStruct *cfs, const char *url)
 {
   int out_status = -1;
   if (!cfs)
     {
-      LOG_ERROR (MOMIR_HTTP_CLIENT, "Passed NULL to scryfall_bulk_data()");
+      LOG_ERROR (MOMIR_HTTP_CLIENT, "Passed NULL cfs to get_scryfall_data");
+      goto out;
+    }
+
+  if (!url)
+    {
+      LOG_ERROR (MOMIR_HTTP_CLIENT, "Passed NULL url to get_scryfall_data");
+      goto out;
+    }
+
+  if (strcmp (url, "") == 0)
+    {
+      LOG_ERROR (MOMIR_HTTP_CLIENT, "Passed empty url to get_scryfall_data");
       goto out;
     }
 
   if (!cfs->curl)
     {
       LOG_ERROR (MOMIR_HTTP_CLIENT,
-                 "Curl is not intialized in scryfall_bulk_data()");
+                 "Curl is not intialized in get_scryfall_data");
       goto out;
     }
 
   if (!cfs->memory)
     {
       LOG_ERROR (MOMIR_HTTP_CLIENT,
-                 "Memory is not initialized in scryfall_bulk_data()");
+                 "Memory is not initialized in get_scryfall_data");
       goto out;
     }
 
-  curl_easy_setopt (cfs->curl, CURLOPT_URL, SCRYFALL_BULK_URL);
+  curl_easy_setopt (cfs->curl, CURLOPT_URL, url);
 
-  LOG_INFO (MOMIR_HTTP_CLIENT, "Requesting bulk data from Scryfall API");
+  LOG_INFO (MOMIR_HTTP_CLIENT, "Issuing get request to %s", url);
   CURLcode result = curl_easy_perform (cfs->curl);
   if (result != CURLE_OK)
     {
@@ -134,6 +146,12 @@ scryfall_bulk_data (struct CurlFatStruct *cfs)
 
 out:
   return out_status;
+}
+
+int
+get_default_cards (struct CurlFatStruct *cfs)
+{
+  return get_scryfall_data (cfs, SCRYFALL_DEFAULT_CARDS_URL);
 }
 
 void
