@@ -1,5 +1,13 @@
+/**
+ * @file constants.h
+ * @brief Momir constant values.
+ */
 #ifndef MOMIR_CONSTANTS_H_
 #define MOMIR_CONSTANTS_H_
+
+#define MOMIR_MAJOR_VERSION 0
+#define MOMIR_MINOR_VERSION 0
+#define MOMIR_PATCH_VERSION 1
 
 #define MOMIR_DATA_DIR "./data/"
 #define MOMIR_BULK_DATA_PATH MOMIR_DATA_DIR "bulk_data.json"
