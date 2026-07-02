@@ -22,18 +22,20 @@ struct CurlFatStruct
 };
 
 /**
- * Represents a bulk data item from Scryfall API.
+ * @brief Represents a bulk data item from the Scryfall API.
+ *
+ * @see https://scryfall.com/docs/api/bulk-data
  */
 struct BulkDataItem
 {
   enum
   {
     SCRYFALL_BULK_DEFAULT_CARDS,
-  } type;
-  time_t updated_at;
-  size_t download_size;
-  char *uri;
-  char *download_uri;
+  } type;                   /**< Which bulk data item this struct represents */
+  time_t updated_at;        /**< Last time this file was updated */
+  size_t jsonl_size;        /**< Uncompressed size of the jsonl file */
+  char *uri;                /**< URI for this file */
+  char *jsonl_download_uri; /**< URI for the jsonl bulk data file */
 };
 
 /**
