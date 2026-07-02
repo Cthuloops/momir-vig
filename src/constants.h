@@ -18,10 +18,30 @@
 #define SCRYFALL_BULK_URL SCRYFALL_API_URL "/bulk-data"
 #define SCRYFALL_DEFAULT_CARDS_URL SCRYFALL_BULK_URL "/default-cards"
 
+/**
+ * @brief Required user agent for requests to Scryfall.
+ *
+ * @see https://scryfall.com/docs/api#required-headers
+ */
 #define SCRYFALL_HEADER_USER_AGENT "User-Agent: MomirVigApp/0.1"
+
+/**
+ * @brief Required user agent for requests to Scryfall.
+ *
+ * @see https://scryfall.com/docs/api#required-headers
+ */
 #define SCRYFALL_ACCEPT "Accept: */*"
 
-#define SCRYFALL_BULK_DATA_UPDATE_TIME 604800L // Amount of seconds in 7 days.
+/**
+ * @def SCRYFALL_BULK_DATA_UPDATE_TIME
+ * @brief Amount of seconds in 7 days
+ *
+ * "If you only need gameplay information, downloading card data once per week
+ * or right after set releases would most likely be sufficient."
+ *
+ * @see https://scryfall.com/docs/api/bulk-data
+ */
+#define SCRYFALL_BULK_DATA_UPDATE_TIME 604800L
 
 // MODULES
 #define MOMIR_MAIN "MOMIR_MAIN"
