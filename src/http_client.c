@@ -149,7 +149,7 @@ out:
 }
 
 int
-download_default_cards (struct CurlFatStruct *cfs)
+download_default_card_info (struct CurlFatStruct *cfs)
 {
   return get_scryfall_data (cfs, SCRYFALL_DEFAULT_CARDS_URL);
 }

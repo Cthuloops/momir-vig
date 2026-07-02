@@ -55,7 +55,7 @@ int curl_init (struct CurlFatStruct *cfs);
  *
  * @return int 1 if successful.
  */
-int download_default_cards (struct CurlFatStruct *cfs);
+int download_default_card_info (struct CurlFatStruct *cfs);
 
 /**
  * @brief curl_deinit deinitializes the CurlFatStruct.
