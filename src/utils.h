@@ -1,3 +1,7 @@
+/**
+ * @file utils.h
+ * @brief Utility for the momir vig project.
+ */
 #ifndef MOMIR_UTILS_H_
 #define MOMIR_UTILS_H_
 
