@@ -22,23 +22,6 @@ struct CurlFatStruct
 };
 
 /**
- * @brief Represents a bulk data item from the Scryfall API.
- *
- * @see https://scryfall.com/docs/api/bulk-data
- */
-struct BulkDataItem
-{
-  enum
-  {
-    SCRYFALL_BULK_DEFAULT_CARDS,
-  } type;                   /**< Which bulk data item this struct represents */
-  time_t updated_at;        /**< Last time this file was updated */
-  size_t jsonl_size;        /**< Uncompressed size of the jsonl file */
-  char *uri;                /**< URI for this file */
-  char *jsonl_download_uri; /**< URI for the jsonl bulk data file */
-};
-
-/**
  * @brief curl_init initializes curl.
  * @param[in] cfs Pointer to CurlFatStruct instance to manage.
  *

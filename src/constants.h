@@ -26,7 +26,7 @@
 #define SCRYFALL_HEADER_USER_AGENT "User-Agent: MomirVigApp/0.1"
 
 /**
- * @brief Required user agent for requests to Scryfall.
+ * @brief Required accept for requests to Scryfall.
  *
  * @see https://scryfall.com/docs/api#required-headers
  */
@@ -48,5 +48,6 @@
 #define MOMIR_HTTP_CLIENT "MOMIR_HTTP_CLIENT"
 #define MOMIR_PRINTER "MOMIR_PRINTER"
 #define MOMIR_UTILS "MOMIR_UTILS"
+#define MOMIR_BULK_DATA "MOMIR_BULK_DATA"
 
 #endif // MOMIR_CONSTANTS_H_
