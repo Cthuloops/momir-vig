@@ -254,3 +254,10 @@ cleanup_bulk_string:
 
   return out_status;
 }
+
+bool
+bulk_data_item_up_to_date (const struct BulkDataItem *bdi)
+{
+  return difftime (time (NULL), bdi->updated_at)
+         < SCRYFALL_BULK_DATA_UPDATE_TIME;
+}
