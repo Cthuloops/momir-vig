@@ -24,6 +24,7 @@ write_to_file (const struct CurlFatStruct *cfs, const char *filename)
       return;
     }
 
+  LOG_DEBUG (MOMIR_MAIN, "Writing %zu bytes to file %s", cfs->size, filename);
   size_t written = fwrite (cfs->memory, sizeof (char), cfs->size, fp);
 
   if (written < cfs->size)
@@ -52,13 +53,18 @@ main (void)
     }
 
   // Make sure our data directory exists
-  if (!file_exists (MOMIR_DATA_DIR, true, true))
+  if (!file_exists (MOMIR_DATA_DIR, true))
     {
-      LOG_FATAL (MOMIR_MAIN, "Error: Couldn't ensure data directory exists");
-      goto cleanup_curl;
+
+      if (!create_dir (MOMIR_DATA_DIR))
+        {
+          LOG_FATAL (MOMIR_MAIN,
+                     "Error: Couldn't ensure data directory exists");
+          goto cleanup_curl;
+        }
     }
 
-  if (!file_exists (MOMIR_BULK_DATA_PATH, false, false))
+  if (bulk_file_needs_update (MOMIR_BULK_DATA_PATH))
     {
       if (scryfall_bulk_data (&cfs))
         {
@@ -66,18 +72,15 @@ main (void)
         }
       else
         {
-          LOG_FATAL (MOMIR_MAIN, "Error: scryfall call failed");
+          LOG_FATAL (MOMIR_MAIN, "Error: scryfall bulk data failed");
           goto cleanup_curl;
         }
     }
   else
     {
-      if (!bulk_file_needs_update (MOMIR_BULK_DATA_PATH))
-        {
-          LOG_INFO (MOMIR_MAIN, "Bulk data is up-to-date");
-          out_status = EXIT_SUCCESS;
-          goto cleanup_curl;
-        }
+      LOG_INFO (MOMIR_MAIN, "Bulk data is up-to-date");
+      out_status = EXIT_SUCCESS;
+      goto cleanup_curl;
     }
 
 cleanup_curl:
