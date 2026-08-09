@@ -27,7 +27,7 @@ enum LogLevel log_get_level (void);
  */
 void log_init (const char *out_path);
 void log_write (enum LogLevel level, const char *module, const char *file,
-                size_t line, const char *fmt, ...);
+                const char *function, size_t line, const char *fmt, ...);
 
 /**
  * @brief log_deinit deinitializes logging.
@@ -35,14 +35,19 @@ void log_write (enum LogLevel level, const char *module, const char *file,
 void log_deinit (void);
 
 #define LOG_DEBUG(module, fmt, ...)                                           \
-  log_write (MOMIR_LOG_DEBUG, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+  log_write (MOMIR_LOG_DEBUG, module, __FILE__, __func__, __LINE__, fmt,      \
+             ##__VA_ARGS__)
 #define LOG_INFO(module, fmt, ...)                                            \
-  log_write (MOMIR_LOG_INFO, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+  log_write (MOMIR_LOG_INFO, module, __FILE__, __func__, __LINE__, fmt,       \
+             ##__VA_ARGS__)
 #define LOG_WARN(module, fmt, ...)                                            \
-  log_write (MOMIR_LOG_WARN, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+  log_write (MOMIR_LOG_WARN, module, __FILE__, __func__, __LINE__, fmt,       \
+             ##__VA_ARGS__)
 #define LOG_ERROR(module, fmt, ...)                                           \
-  log_write (MOMIR_LOG_ERROR, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+  log_write (MOMIR_LOG_ERROR, module, __FILE__, __func__, __LINE__, fmt,      \
+             ##__VA_ARGS__)
 #define LOG_FATAL(module, fmt, ...)                                           \
-  log_write (MOMIR_LOG_FATAL, module, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+  log_write (MOMIR_LOG_FATAL, module, __FILE__, __func__, __LINE__, fmt,      \
+             ##__VA_ARGS__)
 
 #endif // MOMIR_LOGGING_H_

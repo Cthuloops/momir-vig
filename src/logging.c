@@ -55,7 +55,7 @@ log_get_level (void)
 
 void
 log_write (enum LogLevel level, const char *module, const char *file,
-           size_t line, const char *fmt, ...)
+           const char *function, size_t line, const char *fmt, ...)
 {
   if (level < current_log_level || current_log_level == MOMIR_LOG_NONE)
     {
@@ -80,8 +80,8 @@ log_write (enum LogLevel level, const char *module, const char *file,
                TIME_SIZE);
     }
 
-  fprintf (stream, "[%s] %s %s ", log_str[level], current_time,
-           module ? module : "");
+  fprintf (stream, "%s [%s] %s %s (%s:%zu):", log_str[level],
+           module ? module : "", current_time, function, file, line);
 
   va_list args;
   va_start (args, fmt);
