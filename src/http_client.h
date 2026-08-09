@@ -27,7 +27,7 @@ struct CurlFatStruct
  *
  * Initializes the CurlFatStruct struct to be used for later transfers.
  *
- * @return int 1 if successful.
+ * @return int 1 if successful. Otherwise, integer error from libcurl.
  */
 int curl_init (struct CurlFatStruct *cfs);
 
@@ -36,7 +36,8 @@ int curl_init (struct CurlFatStruct *cfs);
  * scryfall.
  * @param[in] cfs Pointer to the CurlFatStruct to use for the request.
  *
- * @return int 1 if successful.
+ * @return int 1 if successful. -1 on failure before request. Otherwise,
+ *  integer error from libcurl.
  */
 int download_default_card_info (struct CurlFatStruct *cfs);
 
