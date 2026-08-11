@@ -7,6 +7,9 @@
 
 #include "constants.h"
 
+const size_t BulkDataItem_str_size = 1;
+const char *BulkDataItem_str[] = { "default_cards" };
+
 /**
  * @brief Represents a bulk data item from the Scryfall API.
  *
@@ -17,7 +20,9 @@ struct BulkDataItem
   enum
   {
     SCRYFALL_BULK_DEFAULT_CARDS,
+    UNKNOWN
   } type;                   /**< Which bulk data item this struct represents */
+  char *type_name;          /**< Type field from bulk data object */
   time_t updated_at;        /**< Last time this file was updated */
   size_t jsonl_size;        /**< Uncompressed size of the jsonl file */
   char *uri;                /**< URI for this file */
@@ -45,15 +50,23 @@ bulk_data_item_up_to_date (const struct BulkDataItem *bdi)
 }
 
 /**
- * @brief bulk_data_item_from_file creates a BulkDataItem from a bulk data
- * file.
+ * @brief bulk_data_item_from_string creates a BulkDataItem from a bulk data
+ * item json string.
  *
  * Expects a json object with the fields found in a #BulkDataItem struct.
- * Must be freed using bulk_item_free.
  *
  * @see bulk_item_free
  *
- * @return bulk data item or NULL on failure.
+ * @return #bulkDataItem or NULL.
+ */
+struct BulkDataItem *bulk_item_from_string (const char *json_string);
+
+/**
+ * @brief bulk_item_from_file is a wrapper of bulk_item_from_string.
+ *
+ * @see bulk_item_from_string
+ *
+ * @return #BulkDataItem or NULL
  */
 struct BulkDataItem *bulk_item_from_file (const char *file_path);
 
