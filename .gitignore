@@ -57,5 +57,8 @@ dkms.conf
 # worktree
 wt_*/
 
-# build
+# project files
 build/
+docs/
+*.log
+data/
