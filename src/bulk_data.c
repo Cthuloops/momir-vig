@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#include "../vendor/cJSON.h"
+#include "../vendor/cJSON/cJSON.h"
 
 #include "bulk_data.h"
 #include "constants.h"
