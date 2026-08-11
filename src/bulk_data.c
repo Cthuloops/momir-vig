@@ -20,12 +20,12 @@ fill_bulk_item_type (struct BulkDataItem *bdi, const cJSON *item)
   const cJSON *type_name = cJSON_GetObjectItemCaseSensitive (item, "type");
   if (cJSON_IsString (type_name) && (type_name->valuestring))
     {
-      size_t type_name_length = strlen (type_name->valuestring) + 1;
-      bdi->type_name = malloc (type_name_length);
+      size_t type_name_length = strlen (type_name->valuestring);
+      bdi->type_name = malloc (type_name_length + 1);
       if (!bdi->type_name)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
-                     type_name_length, type_name->valuestring);
+                     type_name_length + 1, type_name->valuestring);
           return;
         }
 
@@ -78,7 +78,7 @@ fill_bulk_item_jsonl_size (struct BulkDataItem *bdi, const cJSON *item)
       = cJSON_GetObjectItemCaseSensitive (item, "compressed_size");
   if (cJSON_IsNumber (jsonl_size))
     {
-      bdi->jsonl_size = (size_t)jsonl_size;
+      bdi->jsonl_size = (size_t)jsonl_size->valueint;
     }
 }
 
@@ -88,12 +88,12 @@ fill_bulk_item_uri (struct BulkDataItem *bdi, const cJSON *item)
   const cJSON *uri = cJSON_GetObjectItemCaseSensitive (item, "uri");
   if (cJSON_IsString (uri) && (uri->valuestring))
     {
-      size_t uri_length = strlen (uri->valuestring) + 1;
-      bdi->uri = malloc (uri_length);
+      size_t uri_length = strlen (uri->valuestring);
+      bdi->uri = malloc (uri_length + 1);
       if (!bdi->uri)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
-                     uri_length, uri->valuestring);
+                     uri_length + 1, uri->valuestring);
           return;
         }
 
@@ -109,11 +109,11 @@ fill_bulk_item_jsonl_uri (struct BulkDataItem *bdi, const cJSON *item)
   if (cJSON_IsString (jsonl_uri) && (jsonl_uri->valuestring))
     {
       size_t jsonl_uri_length = strlen (jsonl_uri->valuestring) + 1;
-      bdi->uri = malloc (jsonl_uri_length);
-      if (!bdi->uri)
+      bdi->jsonl_download_uri = malloc (jsonl_uri_length);
+      if (!bdi->jsonl_download_uri)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
-                     jsonl_uri_length, jsonl_uri->valuestring);
+                     jsonl_uri_length + 1, jsonl_uri->valuestring);
           return;
         }
 
