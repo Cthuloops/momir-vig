@@ -5,14 +5,16 @@
 #ifndef MOMIR_CONSTANTS_H_
 #define MOMIR_CONSTANTS_H_
 
+// MISC  ----------------------------------------------------------------------
 #define MOMIR_MAJOR_VERSION 0
 #define MOMIR_MINOR_VERSION 0
 #define MOMIR_PATCH_VERSION 1
 
 #define MOMIR_DATA_DIR "./data/"
 #define MOMIR_BULK_DATA_PATH MOMIR_DATA_DIR "bulk_data.json"
+// MISC  ----------------------------------------------------------------------
 
-// HTTP_CLIENT
+// HTTP_CLIENT  ---------------------------------------------------------------
 // Scryfall API
 #define SCRYFALL_API_URL "https://api.scryfall.com"
 #define SCRYFALL_BULK_URL SCRYFALL_API_URL "/bulk-data"
@@ -42,12 +44,14 @@
  * @see https://scryfall.com/docs/api/bulk-data
  */
 #define SCRYFALL_BULK_DATA_UPDATE_TIME 604800L
+// HTTP_CLIENT  ---------------------------------------------------------------
 
-// MODULES
+// MODULES  -------------------------------------------------------------------
 #define MOMIR_MAIN "MOMIR_MAIN"
 #define MOMIR_HTTP_CLIENT "MOMIR_HTTP_CLIENT"
 #define MOMIR_PRINTER "MOMIR_PRINTER"
 #define MOMIR_UTILS "MOMIR_UTILS"
 #define MOMIR_BULK_DATA "MOMIR_BULK_DATA"
+// MODULES  -------------------------------------------------------------------
 
 #endif // MOMIR_CONSTANTS_H_
