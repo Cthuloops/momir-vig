@@ -21,7 +21,15 @@ fill_bulk_item_type (struct BulkDataItem *bdi, const cJSON *item)
   if (cJSON_IsString (type_name) && (type_name->valuestring))
     {
       size_t type_name_length = strlen (type_name->valuestring);
-      bdi->type_name = malloc (type_name_length + 1);
+      if (!bdi->type_name)
+        {
+          bdi->type_name = malloc (type_name_length + 1);
+        }
+      else
+        {
+          bdi->type_name = realloc (bdi->type_name, type_name_length + 1);
+        }
+
       if (!bdi->type_name)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
@@ -89,7 +97,15 @@ fill_bulk_item_uri (struct BulkDataItem *bdi, const cJSON *item)
   if (cJSON_IsString (uri) && (uri->valuestring))
     {
       size_t uri_length = strlen (uri->valuestring);
-      bdi->uri = malloc (uri_length + 1);
+      if (!bdi->uri)
+        {
+          bdi->uri = malloc (uri_length + 1);
+        }
+      else
+        {
+          bdi->uri = realloc (bdi->uri, uri_length + 1);
+        }
+
       if (!bdi->uri)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
@@ -108,8 +124,17 @@ fill_bulk_item_jsonl_uri (struct BulkDataItem *bdi, const cJSON *item)
   const cJSON *jsonl_uri = cJSON_GetObjectItemCaseSensitive (item, "uri");
   if (cJSON_IsString (jsonl_uri) && (jsonl_uri->valuestring))
     {
-      size_t jsonl_uri_length = strlen (jsonl_uri->valuestring) + 1;
-      bdi->jsonl_download_uri = malloc (jsonl_uri_length);
+      size_t jsonl_uri_length = strlen (jsonl_uri->valuestring);
+      if (!bdi->jsonl_download_uri)
+        {
+          bdi->jsonl_download_uri = malloc (jsonl_uri_length + 1);
+        }
+      else
+        {
+          bdi->jsonl_download_uri
+              = realloc (bdi->jsonl_download_uri, jsonl_uri_length + 1);
+        }
+
       if (!bdi->jsonl_download_uri)
         {
           LOG_ERROR (MOMIR_BULK_DATA, "Failed to allocate %zu bytes for %s",
