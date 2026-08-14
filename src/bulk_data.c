@@ -142,8 +142,9 @@ fill_bulk_item_jsonl_uri (struct BulkDataItem *bdi, const cJSON *item)
           return;
         }
 
-      strncpy (bdi->uri, jsonl_uri->valuestring, jsonl_uri_length);
-      bdi->uri[jsonl_uri_length] = '\0';
+      strncpy (bdi->jsonl_download_uri, jsonl_uri->valuestring,
+               jsonl_uri_length);
+      bdi->jsonl_download_uri[jsonl_uri_length] = '\0';
     }
 }
 
