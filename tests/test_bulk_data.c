@@ -93,14 +93,11 @@ test_fill_bulk_item_type_should_match (void)
 int
 main (void)
 {
-  log_init (NULL);
-  log_set_level (MOMIR_LOG_DEBUG);
-
   UNITY_BEGIN ();
+
   init_json ();
   RUN_TEST (test_fill_bulk_item_type_should_match);
   deinit_json ();
 
-  log_deinit ();
   return UNITY_END ();
 }
