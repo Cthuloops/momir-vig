@@ -1,4 +1,4 @@
-#define _XOPEN_SOURCE // for strptime
+#define _XOPEN_SOURCE 700 // for strptime
 
 #include <errno.h>
 #include <stdio.h>
@@ -35,7 +35,7 @@ fill_bulk_item_type (struct BulkDataItem *bdi, const cJSON *item)
       int i = 0;
       while (i < BulkDataItem_str_size)
         {
-          if (strcmp (type_name->valuestring, BulkDataItem_str[i]) == 0)
+          if (strcmp (bdi->type_name, BulkDataItem_str[i]) == 0)
             {
               bdi->type = i;
               break;
