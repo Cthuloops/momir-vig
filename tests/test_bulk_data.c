@@ -81,13 +81,16 @@ tearDown (void)
 void
 test_fill_bulk_item_type_should_match (void)
 {
-  fill_bulk_item_type (bdi, json_arr[GOOD_JSON]);
+  for (int i = 0; i < BulkDataItem_str_size; i++)
+    {
+      fill_bulk_item_type (bdi, json_arr[i]);
 
-  TEST_ASSERT_NOT_NULL_MESSAGE (bdi, "BDI is NULL");
-  TEST_ASSERT_NOT_NULL_MESSAGE (bdi->type_name, "type_name is NULL");
-  TEST_ASSERT_EQUAL_STRING (bdi->type_name, "default_cards");
-  TEST_ASSERT_EQUAL_INT_MESSAGE (bdi->type, SCRYFALL_BULK_DEFAULT_CARDS,
-                                 "type enum doesn't match");
+      TEST_ASSERT_NOT_NULL_MESSAGE (bdi, "BDI is NULL");
+      TEST_ASSERT_NOT_NULL_MESSAGE (bdi->type_name, "type_name is NULL");
+      TEST_ASSERT_EQUAL_STRING (bdi->type_name, BulkDataItem_str[i]);
+      TEST_ASSERT_EQUAL_INT_MESSAGE (bdi->type, SCRYFALL_BULK_DEFAULT_CARDS,
+                                     "type enum doesn't match");
+    }
 }
 
 int
