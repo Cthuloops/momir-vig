@@ -1,106 +1,111 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "../vendor/Unity/unity.h"
-#include "../vendor/cJSON/cJSON.h"
 
-#include "../src/bulk_data.c"
+#include "../src/bulk_data.h"
 
-static const char *json_strings[] = {
-  "{\"object\":\"bulk_data\",\"id\":\"e2ef41e3-5778-4bc2-af3f-"
-  "78eca4dd9c23\",\"type\":\"default_cards\",\"updated_at\":\"2026-08-"
-  "13T09:05:26.070+00:00\",\"uri\":\"https://api.scryfall.com/bulk-data/"
-  "e2ef41e3-5778-4bc2-af3f-78eca4dd9c23\",\"name\":\"Default "
-  "Cards\",\"description\":\"A JSON file containing every card object on "
-  "Scryfall in English or the printed language if the card is only "
-  "available in one "
-  "language.\",\"jsonl_download_uri\":\"https://data.scryfall.io/"
-  "default-cards/"
-  "default-cards-20260813090526.jsonl.gz\",\"compressed_size\":77512052}",
+enum TestCase
+{
+  TEST_CASE_VALID_JSON,
+  TEST_CASE_UNKNOWN_TYPE
 };
 
-enum JsonType
+struct TestFixture
 {
-  GOOD_JSON
+  const char json_input[1024];
+  struct
+  {
+    int type;
+    const char type_name[32];
+    int64_t updated_at;
+    uint64_t jsonl_size;
+    const char uri[128];
+    const char jsonl_download_uri[128];
+  } expected;
 };
 
-#define json_type_size 1
-
-static cJSON *json_arr[json_type_size] = { 0 };
-
-void
-init_json (void)
-{
-  for (int i = 0; i < json_type_size; i++)
-    {
-      json_arr[i] = cJSON_Parse (json_strings[i]);
-      if (!json_arr[i])
-        {
-          const char *err = cJSON_GetErrorPtr ();
-          if (!err)
-            {
-              fprintf (stderr, "Error in json string %d before %s", i,
-                       json_strings[i]);
-              exit (EXIT_FAILURE);
-            }
-        }
-    }
-}
-
-void
-deinit_json (void)
-{
-  for (int i = 0; i < json_type_size; i++)
-    {
-      cJSON_Delete (json_arr[i]);
-    }
-}
-
-static struct BulkDataItem *bdi = NULL;
+static const struct TestFixture test_cases[] = {
+  { .json_input
+    = "{\"object\":\"bulk_data\",\"id\":\"e2ef41e3-5778-4bc2-af3f-"
+      "78eca4dd9c23\",\"type\":\"default_cards\",\"updated_at\":\"2026-08-"
+      "13T09:05:26.070+00:00\",\"uri\":\"https://api.scryfall.com/bulk-data/"
+      "e2ef41e3-5778-4bc2-af3f-78eca4dd9c23\",\"name\":\"Default "
+      "Cards\",\"description\":\"A JSON file containing every card object on "
+      "Scryfall in English or the printed language if the card is only "
+      "available in one "
+      "language.\",\"jsonl_download_uri\":\"https://data.scryfall.io/"
+      "default-cards/"
+      "default-cards-20260813090526.jsonl.gz\",\"compressed_size\":"
+      "77512052}",
+    .expected
+    = { .type = SCRYFALL_BULK_DEFAULT_CARDS,
+        .type_name = "default_cards",
+        .updated_at = 1786629926L,
+        .jsonl_size = 77512052,
+        .uri = "https://api.scryfall.com/bulk-data/"
+               "e2ef41e3-5778-4bc2-af3f-78eca4dd9c23",
+        .jsonl_download_uri = "https://data.scryfall.io/default-cards/"
+                              "default-cards-20260813090526.jsonl.gz" } },
+  { .json_input
+    = "{\"type\":\"unknown_type\",\"updated_at\":\"2026-08-13T12:12:12\","
+      "\"uri\":\"https://example.com\",\"jsonl_download_uri\":\"https://"
+      "example.com/jsonl\",\"compressed_size\":121212}",
+    .expected = { .type = SCRYFALL_BULK_UNKNOWN_CARDS,
+                  .type_name = "unknown_type",
+                  .updated_at = 1786641132L,
+                  .jsonl_size = 121212,
+                  .uri = "https://example.com",
+                  .jsonl_download_uri = "https://example.com/jsonl" } },
+};
 
 void
 setUp (void)
 {
-  bdi = malloc (sizeof (struct BulkDataItem));
-  if (bdi)
-    {
-      memset (bdi, 0, sizeof (struct BulkDataItem));
-    }
 }
 
 void
 tearDown (void)
 {
-  if (bdi)
-    {
-      bulk_item_free (bdi);
-      bdi = NULL;
-    }
 }
 
 void
-test_fill_bulk_item_type_should_match (void)
+test_bulk_item_from_string_valid_json (void)
 {
-  for (int i = 0; i < BulkDataItem_str_size; i++)
-    {
-      fill_bulk_item_type (bdi, json_arr[i]);
+  const struct TestFixture *tc = &test_cases[TEST_CASE_VALID_JSON];
+  struct BulkDataItem *item = bulk_item_from_string (tc->json_input);
 
-      TEST_ASSERT_NOT_NULL_MESSAGE (bdi, "BDI is NULL");
-      TEST_ASSERT_NOT_NULL_MESSAGE (bdi->type_name, "type_name is NULL");
-      TEST_ASSERT_EQUAL_STRING (bdi->type_name, BulkDataItem_str[i]);
-      TEST_ASSERT_EQUAL_INT_MESSAGE (bdi->type, SCRYFALL_BULK_DEFAULT_CARDS,
-                                     "type enum doesn't match");
-    }
+  TEST_ASSERT_NOT_NULL (item);
+  TEST_ASSERT_EQUAL_INT (tc->expected.type, item->type);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.type_name, item->type_name);
+  TEST_ASSERT_EQUAL_INT64 (tc->expected.updated_at, (int64_t)item->updated_at);
+  TEST_ASSERT_EQUAL_UINT64 (tc->expected.jsonl_size,
+                            (uint64_t)item->jsonl_size);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.uri, item->uri);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.jsonl_download_uri,
+                            item->jsonl_download_uri);
+
+  bulk_item_free (item);
+}
+
+void
+test_bulk_item_from_string_unknown (void)
+{
+  const struct TestFixture *tc = &test_cases[TEST_CASE_UNKNOWN_TYPE];
+  struct BulkDataItem *item = bulk_item_from_string (tc->json_input);
+
+  TEST_ASSERT_NOT_NULL (item);
+  TEST_ASSERT_EQUAL_INT (tc->expected.type, item->type);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.type_name, item->type_name);
+  TEST_ASSERT_EQUAL_INT64 (tc->expected.updated_at, (int64_t)item->updated_at);
+  TEST_ASSERT_EQUAL_UINT64 (tc->expected.jsonl_size,
+                            (uint64_t)item->jsonl_size);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.uri, item->uri);
+  TEST_ASSERT_EQUAL_STRING (tc->expected.jsonl_download_uri,
+                            item->jsonl_download_uri);
 }
 
 int
 main (void)
 {
   UNITY_BEGIN ();
-
-  init_json ();
-  RUN_TEST (test_fill_bulk_item_type_should_match);
-  deinit_json ();
 
   return UNITY_END ();
 }
