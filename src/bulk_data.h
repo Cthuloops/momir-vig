@@ -20,7 +20,7 @@ struct BulkDataItem
   enum
   {
     SCRYFALL_BULK_DEFAULT_CARDS,
-    UNKNOWN
+    SCRYFALL_BULK_UNKNOWN_CARDS
   } type;                   /**< Which bulk data item this struct represents */
   char *type_name;          /**< Type field from bulk data object */
   time_t updated_at;        /**< Last time this file was updated */
